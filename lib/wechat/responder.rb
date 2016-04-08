@@ -21,8 +21,11 @@ module Wechat
     module ClassMethods
       attr_accessor :wechat, :token, :corpid, :agentid, :encrypt_mode, :timeout, :skip_verify_ssl, :encoding_aes_key
 
-      def on(message_type, with: nil, respond: nil, &block)
+      def on(message_type, options={}, &block)
         fail 'Unknow message type' unless [:text, :image, :voice, :video, :link, :event, :click, :view, :scan, :batch_job, :location, :fallback].include?(message_type)
+        respond  = options[:respond]
+        with     = options[:with]
+
         config = respond.nil? ? {} : { respond: respond }
         config.merge!(proc: block) if block_given?
 
@@ -174,7 +177,10 @@ module Wechat
 
       if response.respond_to? :to_xml
         body = process_response(response)
-        Rails.version.start_with?("3.") ? (render text: body) : (render plain: body)
+        if Rails.version.start_with?("3.") 
+          render text: body
+        else 
+          render plain: body
       else
         render nothing: true, status: 200, content_type: 'text/html'
       end
