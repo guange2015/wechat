@@ -10,7 +10,7 @@ module Wechat
       select(:session_raw).where(openid: openid).last.try :session
     end
 
-    %i(request response session).each do |name|
+    [:request, :response, :session].each do |name|
       define_method name do
         raw = send(:"#{name}_raw")
         raw.blank? ? {} : JSON.parse(raw).symbolize_keys
