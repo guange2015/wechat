@@ -17,7 +17,11 @@ module Wechat
         @items = []
       end
 
-      def item(title: 'title', description: nil, pic_url: nil, url: nil)
+      def item(options={})
+        title = options[:title]
+        description = options[:description]
+        pic_url = options[:pic_url]
+        url = options[:url]
         items << { Title: title, Description: description, PicUrl: pic_url, Url: url }.reject { |_k, v| v.nil? }
       end
     end
